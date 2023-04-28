@@ -1,4 +1,4 @@
-import argparse, csv, sys, pandas
+import argparse, csv, sys
 from datetime import date, datetime
 from time import sleep
 from tabulate import tabulate

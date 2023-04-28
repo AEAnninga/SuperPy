@@ -11,3 +11,6 @@ bought_id,product_name,buy_date,expiration_date,buy_price,buy_quantity,left_quan
 10,Olive oil 1 ltr,04-12-2022,31-05-2023,10,50,0,500.0
 11,Zaanse mayonaise 750ml,04-12-2022,31-05-2023,10,50,0,500.0
 12,Douchegel,26-04-2023,21-05-2023,10.0,10,10,100.0
+13,Olive oil 1 ltr,26-04-2023,31-12-2021,10.75,10,10,107.5
+14,Olive oil 1 ltr,26-04-2023,31-12-2021,10.75,10,2,107.5
+15,Olive oil 1 ltr,28-04-2023,31-12-2024,5.0,13,10,65.0

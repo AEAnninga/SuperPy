@@ -21,8 +21,6 @@ def create_bought_rows(dict, table):
         left_quantity,
         cost,
     ) = dict.items()
-    
-    
 
 
     exp_date = convert_date(expiration_date[1], False)

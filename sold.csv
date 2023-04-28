@@ -9,3 +9,5 @@ sell_id,bought_id,product_name,sell_date,sell_price,sell_quantity,revenue
 8,11,Zaanse mayonaise 750ml,12-04-2023,15,40,600.0
 9,11,Zaanse mayonaise 750ml,13-04-2023,20,10,200.0
 10,8,Whiskey 12jr 70cl,13-04-2023,20,10,200.0
+11,14,Olive oil 1 ltr,28-04-2023,50,8,400.0
+12,15,Olive oil 1 ltr,28-04-2023,25,3,75.0

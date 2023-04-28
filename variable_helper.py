@@ -1,6 +1,7 @@
-from datetime import date, datetime
 from rich.console import Console
-from argparse import HelpFormatter
+# import shutil
+
+# terminal_size_line = "_" * shutil.get_terminal_size().columns
 
 
 # columns
@@ -85,7 +86,7 @@ REPORTS = {
     "all": "Display all table overviews",
 }
 
-# help text variables, text will be displayed as eneath, indentation and whitespaces will be preserved
+# HELP TEXT VARIABLES: text will be displayed as beneath, indentation and whitespaces are preserved
 
 help_text = f"""Show this help message and exit.\n
 """
@@ -94,8 +95,10 @@ version_text = f"""Show version number of SuperPy and exit.\n
 """
 
 reports_help_text = f"""
-Choose your report:
 ----------------------------------------------------------------------------------------------------
+-report bought | sold | storage | product_range | all
+----------------------------------------------------------------------------------------------------
+Displays report generated from csv-files:
 bought          -->     {REPORTS["bought"]}
 sold            -->     {REPORTS["sold"]}
 storage         -->     {REPORTS["storage"]}
@@ -105,18 +108,20 @@ all             -->     {REPORTS["all"]}
 """
 
 buy_product_help_text = f"""
-Add 4 product properties in correct order separated by space:
+-bp | --buy-product [<product_name> <buy_price> <expiration_date> <quantity>]
 ----------------------------------------------------------------------------------------------------
-[<product_name> <buy_price> <expiration_date> <quantity>]
+Buy new product and write its properties to csv files where needed: bought.csv storage.csv product_range.csv 
+Fill in 4 product properties in correct order separated by spaces:
 For expiration_date use format: <dd-MM-yyyy> or <yyyy-MM--dd>
 If your product_name contains spaces, enclose name in single or double quotes: "product name"/'product name'
 ----------------------------------------------------------------------------------------------------\n    
 """
 
-sell_product_help_text = f""" 
-Add 3 bought product properties after in correct order separated by spaces:
+sell_product_help_text = f"""
+-sp | --sell-product [<bought_id> <sell_price> <quantity>]
 ----------------------------------------------------------------------------------------------------
-[<bought_id> <sell_price> <quantity>]
+Sells a bought product and updates csv files where needed: sold.csv bought.csv storage.csv
+Fill in 3 bought product properties after in correct order separated by spaces:
 ----------------------------------------------------------------------------------------------------\n 
 """
 
@@ -130,8 +135,10 @@ today_help_text = f"""Flag which disregards the given sell or buy date and uses 
 """
 
 change_date_help_text = f"""
-Change date the program is currently working with:
+required: --days or --date:
+--days <int> | --days <-int>| --date  <dd-MM-yyyy> | --date <yyyy-MM--dd> 
 ----------------------------------------------------------------------------------------------------
+Change date the program is currently working with:
 Advance or subtract number of days from today's date (not working date!).
 Use positive integer: Advance
 Use negative integer: Subtract
@@ -173,7 +180,8 @@ product_profit_help_text = f"""Filter for profit, shows cost and profit of singl
 toggle_cls_help_text = f"""
 Toggles clear screen on or off:
 ----------------------------------------------------------------------------------------------------
-ON:  Display will be refreshed with every command, except for -h (help) and -v (version). 
-OFF: Everything stays visible, scrolling through history enabled.
+ON:  Console screen will be cleared with every command, except for -h (help) and -v (version). 
+OFF: Console screen will not be cleared, scrolling up through history is possible.
 ----------------------------------------------------------------------------------------------------\n
 """
+
