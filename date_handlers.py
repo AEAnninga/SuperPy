@@ -1,11 +1,22 @@
 from datetime import date, datetime, timedelta
-from csv_helper import *
+from csv_helper import read_csv, rewrite_csv
 from variable_helper import *
+from rich import print as RichPrint
+from rich.text import Text
 
+
+# get nearest (earliest) date from expiration dates > used in reports
+def get_nearest_exp_date(product_name):
+    bought_products = read_csv(bought_file)
+    product_exp_dates = [convert_date(item["expiration_date"], False) for item in bought_products if item["product_name"] == product_name]
+    try:
+        exp_date = min(product_exp_dates)
+    except:
+        return print(no_products_text)
+    return convert_date(exp_date)
 
 def get_working_date():
     working_date = read_csv(date_file)
-    #    print(working_date)
     return working_date
 
 
@@ -13,20 +24,17 @@ def change_working_date(number_of_days: int = 0, given_date=None):
     if given_date:
         converted_date = convert_date(given_date)
         current_used_date = [converted_date]
-        # print(f"Date to go in csv: {current_used_date[0]}")
         if converted_date != None:
             rewrite_csv(date_file, current_used_date)
-        # return current_used_date
     else:
         time_delta = timedelta(days=int(number_of_days))
         converted_date = convert_date(date.today() + time_delta)
         current_used_date = [converted_date]
         if converted_date != None:
             rewrite_csv(date_file, current_used_date)
-        # return current_used_date
 
 
-
+# convert date to string or date object > can receive date as string or object
 def convert_date(given_date, return_string: bool = True):
     date_type = type(given_date)
     if date_type == str:
@@ -53,74 +61,49 @@ def convert_date(given_date, return_string: bool = True):
         if return_string:
             return date_as_string
         return given_date
+    
 
-# test date conversion
+# date texts and warnings
+def print_date_text(reset_text: bool=False, display_text: bool=False, change_text: bool=False):
+    past_or_future = ("in the past" if convert_date(date.today(), False) >= convert_date(get_working_date(), False) else "in the future") 
+    date_change_text = Text(f"\n Working date is {past_or_future}: {get_working_date()} \n".upper(),style="blink bold italic red r")
+    date_today_text = Text(f"\n Working date is today: {get_working_date()} \n".upper(),style="bold italic white r")
+    display_date_text = Text(f"\n Working date is: {get_working_date()} \n".upper(),style="bold italic white r")
+    reset_date_text = Text(f"\n Resetting date to today: {get_working_date()} \n".upper(),style="bold italic white r")
+    if reset_text:
+        RichPrint(reset_date_text)
+    if display_text:
+        RichPrint(display_date_text)  
+    if change_text:
+        RichPrint(date_change_text) if convert_date(date.today()) != convert_date(get_working_date()) else RichPrint(date_today_text)
 
-# def convert_date_long(date_object, return_string: bool = True):
-#     date_type = type(date_object)
-#     # print(f"Wat voor date-type gaat erin: {date_type}")
-#     if date_type == str:
-#         # #     date_obj = date(date_object)
-#         start_length = len(date_object.split("-")[0])
-#         if start_length <= 2:
-#             try:
-#                 new_date = (
-#                     datetime.strptime(date_object, f"%d-%m-%Y").date()
-#                     # .__format__(f"%d-%m-%Y")
-#                 )
-#                 # print(f"Returned datetype from string: {type(new_date)}")
-#             except ValueError as err:
-#                 print(f"{date_object} is not a valid date")
-#                 print(err)
-#                 return print(f"please use valid date")
-#         if start_length == 4:
-#             try:
-#                 # print("starts with year")
-#                 reversed_date = (
-#                     datetime.strptime(date_object, f"%Y-%m-%d")
-#                     .date()
-#                     .__format__(f"%d-%m-%Y")
-#                 )
-#                 new_date = (
-#                     datetime.strptime(reversed_date, f"%d-%m-%Y").date()
-#                     # .__format__(f"%d-%m-%Y")
-#                 )
-#                 # new_date = reversed_date.__format__(f"%d-%m-%Y")
-#                 # print(f"Returned datetype from string: {type(new_date)}")
-#             except ValueError as err:
-#                 print(f"{date_object} is not a valid date")
-#                 print(err)
-#                 return print(f"PLease use valid date")
-#         # print(f"Wat voor date-type gaat eruit: {type(new_date)}")
-#         if return_string:
-#             new_date = new_date.__format__(f"%d-%m-%Y")
-#         return new_date
-#     else:
-#         new_date = date_object.__format__(f"%d-%m-%Y")
-#         try:
-#             test_date = datetime.strptime(new_date, f"%d-%m-%Y").date()
-#         except ValueError as err:
-#             print(f"{date_object} is not a valid date")
-#             return print(err)
-#         if return_string:
-#             test_date = test_date.__format__(f"%d-%m-%Y")
-#         # print(f"Wat voor date-type gaat eruit: {type(test_date)}")
-#         return test_date
+def print_date_warning(args):
+    if (
+        convert_date(date.today()) != convert_date(get_working_date())
+        and args.reset_date == False
+        and args.change_date == False
+        and args.display_date == False
+    ):
+        today = convert_date(date.today())
+        working_date = get_working_date()
+        date_warning_text = Text(
+            f"\n Please note you are currently working with date: {working_date} ".upper(
+            ),
+            style="blink bold italic red r",
+        )
+        date_warning_text.append(
+            f"\n While today's date is {today} \n".upper(),
+            style="blink bold italic yellow r",
+        )
 
-# test = "21-12-2023"
-# test_american = "2023-12-21"
+        date_action_text = Text(
+            "\n To reset the working date to today, use: \n ".upper(),
+            style="bold italic yellow r",
+        )
+        date_action_text.append(
+            "\n python super.py -rd (or: --reset-date) \n",
+            style="bold italic yellow r",
+        )
 
-# reversed_date_str = (
-#     datetime.strptime(test_american, f"%Y-%m-%d")
-#     .date()
-#     .__format__(f"%d-%m-%Y")
-# )
-# reversed_date_obj = datetime.strptime(reversed_date_str, f"%d-%m-%Y")
-
-# print(f"{type(reversed_date_str)} : {reversed_date_str}")
-# print(f"{type(reversed_date_obj)} : {reversed_date_obj}")
-
-# testdate2 = date(2023,12,21)
-# print(f"{test} wordt: {convert_date_long(test, False)}")
-# print(f"{test_american} wordt: {convert_date_long(test_american, False)}")
-# print(f"{testdate2} wordt: {convert_date_long(testdate2, False)}")
+        RichPrint(date_warning_text)
+        RichPrint(date_action_text)
