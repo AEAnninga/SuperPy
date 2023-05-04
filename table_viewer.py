@@ -1,7 +1,5 @@
 from rich import box
 from rich.table import Table
-# from inventory import *
-# from csv_helper import *
 from variable_helper import *
 
 

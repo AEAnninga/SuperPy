@@ -95,7 +95,11 @@ def create_id(filename, id_name):
 
 
 def create_product_id(productlist):
-    max_id = max([int(item["product_id"]) for item in productlist])
-    preceeding_zeros_count = max_length_product_id - len(str(max_id))
-    new_id = preceeding_zeros_count * "0" + str(max_id + 1)
-    return new_id
+    first_id = "00001"
+    if productlist:
+        max_id = max([int(item["product_id"]) for item in productlist])
+        preceeding_zeros_count = max_length_product_id - len(str(max_id))
+        new_id = preceeding_zeros_count * "0" + str(max_id + 1)
+        return new_id
+    else:
+        return first_id

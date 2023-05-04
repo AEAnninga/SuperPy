@@ -1,0 +1,341 @@
+########## USAGE GUIDE SUPERPY V1.0 ##########
+
+BEFORE USE, PLEASE INSTALL DEPENDENCIES IF NEEDED! :
+
+    python : https://docs.python.org/3/
+    pip    : https://pip.pypa.io/en/stable/installation/
+
+    rich            : python pip install rich ( https://rich.readthedocs.io/en/stable/introduction.html#installation )
+    rich_argparse   : python pip install rich-argparse ( https://pypi.org/project/rich-argparse/ )
+    inquirer        : python pip instll inquirer ( https://pypi.org/project/inquirer/ )
+    matplotlib      : python -m pip install -U matplotlib ( https://matplotlib.org/stable/users/installing/index.html )
+    numpy           : python pip install numpy ( https://numpy.org/doc/1.24/user/absolute_beginners.html )
+
+1.0 What is and does SuperPy:
+-----------------------------
+    SuperPy is a command line tool for supermarkets to keep track of their inventory
+    With SuperPy you can:
+        * buy and sell products and store them in csv files
+        * display different reports/table overviews of your products
+        * visualize some product statistics in a graph
+        * visualize total profit, along wih revenue and cost in a graph
+        * calculate profit for single date, single product, period between 2 dates or total profit
+        * set desired working date: if you bought or sold a product in the past, but forgot to add it in SuperPy
+        * reset working date back to today's date
+
+2.0 GENERAL USAGE
+----------------------------------------------------------------------------------------------------------------------------------------------
+    Usage: super.py [-h] [-v] [-report {bought,sold,storage,product_range,all}] [-graph {profit,bought,sold,storage}] [-bp str str str str] 
+                   [-sp] [-ud str | --today] [-cd] [--days int | --date str] [-dd] [-rd] [-profit] [-op | -dp str str | -pp] [--toggle-cls]
+
+3.0 OPTIONS
+----------------------------------------------------------------------------------------------------------------------------------------------
+
+3.1     -h, --help
+
+        Displays usage and options of the program
+        usage: 
+            python super.py -h
+            python super.py --help
+
+
+3.2     -v --version
+
+        Displays name and version number of the program
+        usage: 
+            python super.py -v
+            python super.py --version
+
+
+3.3     -report <name>
+
+        Displays report generated from csv files.
+        
+        For the name of the report, choose from:
+            bought (report of bought products)
+            sold (report of sold products)
+            storage (report of products in storage)
+            product_range (report of different products)
+            all (displays all reports: bought sold storage product_range)
+        
+        usage:
+            python super.py -report bought   
+            python super.py -report sold  
+            python super.py -report storage
+            python super.py -report product_range 
+            python super.py -report all  
+
+
+3.4     -graph <name>
+
+        Generates a graphic representation of data from csv-files in a new window.
+        Usage of super.py will be blocked until window is closed.
+        If not enough products are available (bought,sold or in product_range), graph will not be shown. The program will show message and exit
+        
+        For name of the graph choose:
+            profit      (graph of total profit, along with cost and revenue)
+            bought      (graph of bought products)
+            sold        (graph of sold products)
+            storage     (graph of products in storage)
+        
+        usage:
+            python super.py -graph profit
+            python super.py -graph bought
+            python super.py -graph sold
+            python super.py -graph storage
+
+
+3.5     -bp | --buy-product [<product_name> <buy_price> <expiration_date> <quantity>]
+
+        REQUIRED: 
+            --today
+            -ud | --use-date <dd-MM-yyyy> or <yyyy-MM--dd>
+
+        Buy new product and write its properties to csv files where needed: bought.csv storage.csv product_range.csv
+        Fill in 4 product properties in correct order separated by spaces
+        If your product_name contains spaces, enclose name in single or double quotes: "product name" or 'product name'
+        For expiration_date and/or --use-date use format: <dd-MM-yyyy> or <yyyy-MM--dd>
+        Dates will always be converted. No errors will occur if you use the correct format: <dd-MM-yyyy> or <yyyy-MM--dd>
+
+        usage:
+            python super.py -bp | --buy-product [<product_name> <buy_price> <expiration_date> <quantity>] --today
+            python super.py -bp | --buy-product [<product_name> <buy_price> <expiration_date> <quantity>] -ud | --use-date <dd-MM-yyyy> or <yyyy-MM--dd>
+
+        examples:
+            Buy cola, buy price is 1.25, expiration date is 21-03-2024, quantity is 10:
+                
+                python super.py --buy-product cola 1.25 21-03-2024 10 --today
+
+                * or choose buy date:
+                python super.py --bp cola 1.25 2024-03-21 10 -ud 02-05-2023
+                python super.py --buy-product cola 1.25 2024-03-21 10 --use-date 2023-05-02
+
+                * not cola, but coca cola (spaces in product name):
+                python super.py --buy-product "Coca Cola" 1.25 21-03-2024 10 --today
+        
+        It's recommended to have today's date as the working date and use --today when buying products.
+        If data is entered correctly, program will ask to confirm the buy.
+        Choose y(es) or n(o) to confirm or abort  
+
+
+3.6     -sp | --sell-product
+
+        REQUIRED:
+            --today
+            -ud | --use-date <dd-MM-yyyy> or <yyyy-MM--dd>
+
+        Sells a bought product and updates csv files where needed: sold.csv bought.csv storage.csv
+        User will be prompted to:
+        1. choose a product name from product range
+        2. choose product batch from chosen product (from bought products)
+        3. fill in sell_price
+        4. fill in sell_quantity
+        5. confirm sell: y(es) or n(o)
+        To abort early: ctrl c | ^c
+
+        usage:
+            python super.py -sp | --sell-product --today
+            python super.py -sp | --sell-product -ud | --use-date <dd-MM-yyyy> or <yyyy-MM--dd>
+        examples:
+            python super.py -sp --today
+            python super.py --sell-product -ud 21-05-2021
+            python super.py -sp --use-date 2021-05-21
+
+        It's recommended to have today's date as the working date and use --today when buying products.
+
+
+3.7     -ud, --use-date
+
+        Use in combination with -bp | --buy-product | -sp | --sell-product
+        Cannot be used simultaneously with --today
+
+        usage:
+            python super.py -sp -ud | --use-date <dd-MM-yyyy> or <yyyy-MM--dd>
+        examples:
+            python super.py -sp --use-date 21-05-2021
+            python super.py --sell-product -ud 2021-05-21
+
+
+3.8     --today
+
+        Use in combination with -bp | --buy-product | -sp | --sell-product
+        Cannot be used simultaneously with --use-date | -ud
+
+        usage:
+            python super.py -sp --today
+        examples:
+            python super.py -sp --today
+            python super.py --sell-product --today
+
+
+3.9     -cd | --change-date
+
+        REQUIRED: 
+            --days <int> or <-int>
+            --date  <dd-MM-yyyy> or <yyyy-MM--dd>
+
+        Change date the program is currently working with:
+            --days <int> | <-int>
+                Advance or subtract number of days from today's date (not working date!).
+                Advance:    use positive integer 
+                Subtract:   use negative integer
+                Use 0 (zero) to reset date to today's date.
+            --date <dd-MM-yyyy> | --date <yyyy-MM--dd> 
+                Fill in date, use format: <dd-MM-yyyy> or <yyyy-MM--dd>
+
+        usage:
+            python super.py -cd | --change-date --days | --date <dd-MM-yyyy> or <yyyy-MM--dd>
+        examples:
+            python super.py -cd --days 10
+            python super.py --change-date --days -10
+            python super.py -cd --days 0
+            python super.py -cd --date 21-05-2021
+            python super.py -cd --date 2021-05-21
+
+ 
+3.10    -dd | --display-date
+
+        Displays date the program is currently working with.
+
+        usage: 
+            python super.py -dd | --display-date
+        examples:
+            python super.py -dd
+            python super.py --display-date
+
+
+3.10    -rd | --reset-date
+
+        Resets date the program is currently working with.
+
+        usage: 
+            python super.py -rd | --reset-date
+        examples:
+            python super.py -rd
+            python super.py --reset-date
+
+
+3.11    --days <int> | <-int>
+
+        Use in combination with -cd or --change-date.
+        Advance or subtract number of days from today's date (not working date!).
+            Advance:    use positive integer 
+            Subtract:   use negative integer
+            Use 0 (zero) to reset date to today's date.
+
+        usage:
+            python super.py -cd | --change-date --days
+        examples:
+            python super.py -cd --days 10
+            python super.py --change-date --days -10
+            python super.py -cd --days 0
+
+        Cannot be used simultaneously with --date
+
+
+3.12    --date <dd-MM-yyyy> or <yyyy-MM--dd>
+
+        Use in combination with -cd or --change-date.
+        Fill in date, use format: <dd-MM-yyyy> or <yyyy-MM--dd>
+
+        usage:
+            python super.py -cd | --change-date --date <dd-MM-yyyy> or <yyyy-MM--dd>
+        examples:
+            python super.py -cd --date 21-05-2021
+            python super.py -cd --date 2021-05-21
+
+        Cannot be used simultaneously with --days
+
+
+3.13    -profit
+
+    REQUIRED:
+        -op | --overall-profit
+        -pp | --product-profit
+        -dp | --date-profit  <dd-MM-yyyy> <dd-MM-yyyy> | <yyyy-MM--dd> <yyyy-MM--dd>
+
+    Displays table overview of cost, revenue and profit. Use with:
+        -op | --overall-profit ( shows profit of all products and all dates )
+        -pp | --product-profit ( shows product of single product, user is prompted with list of products to select from )
+        -dp | --date-profit  ( shows profit between 2 dates, use same date twice for single day )
+
+    usage:
+        python super.py -profit -op
+        python super.py -profit --overall-profit
+        python super.py -profit -pp
+        python super.py -profit -product-profit
+        python super.py -profit -dp <date> <date> 
+        python super.py -profit -date-profit <date> <date>
+    examples for usage with -dp | --date-profit:
+        python super.py -profit -dp 21-01-2015 21-04-2019 
+        python super.py -profit -date-profit 2019-04-21 21-01-2015
+
+    When using dates, the order of the dates doesn't matter. The program will detect which date is the oldest and which is the newest.
+    Format of the 2 dates don't have to be the same, but for each date it must be one of the following: <dd-MM-yyyy> or <yyyy-MM--dd>
+
+
+3.14    -op | --overall-profit
+
+        To be used in combination with -profit
+        Shows profit of all products and all dates in a table
+
+        usage:
+            see 3.13 -profit
+        examples:
+            see 3.13 -profit
+
+        cannot be used simultaneously with:
+            -pp | --product-profit
+            -dp | --date-profit
+
+
+3.15    -pp | --product-profit
+
+        To be used in combination with -profit
+        Shows profit of a single product in a table
+        user is prompted with list of products to select from
+
+        usage:
+            see 3.13 -profit
+        examples:
+            see 3.13 -profit
+
+        cannot be used simultaneously with:
+            -op | --overall-profit
+            -dp | --date-profit
+
+
+
+3.16    -dp | --date-profit
+
+        To be used in combination with -profit
+        shows profit between 2 dates, use same date twice for single day
+        Fill in 2 dates, use format: <dd-MM-yyyy> or <yyyy-MM--dd>
+
+        usage:
+            see 3.13 -profit
+        examples:
+            see 3.13 -profit
+
+        cannot be used simultaneously with:
+            -op | --overall-profit
+            -pp | --product-profit
+
+3.17    --toggle-cls
+
+        Switch to toggle clear-screen ON or OFF
+        Default = OFF
+
+        ON:  Console screen will be cleared with every command, except for -h (help) and -v (version). 
+        OFF: Console screen will not be cleared, scrolling up through history is possible.
+
+        usage:
+            python super.py --toggle-cls
+            
+
+4.0     FINAL NOTICE
+----------------------------------------------------------------------------------------------------------------------------------------------
+
+    Thanks for using super.py version 1.0
+    Copyrights Reserved Anningast Productions 
+

@@ -5,6 +5,7 @@ from rich.text import Text
 from rich import print as RichPrint
 from inventory import create_inventory_report, create_all_inventory_reports
 from variable_helper import *
+from datetime import datetime, date
 from date_handlers import convert_date, get_working_date, print_date_warning, print_date_text, change_working_date
 from graph_plotter import plot_graph
 from buy_product import buy_product
@@ -19,6 +20,7 @@ __human_name__ = "superpy"
 
 # Your code below this line.
 # Have working date available, every time the script runs, working date is refreshed
+change_working_date()
 working_date = convert_date(get_working_date())
 
 # create class which combines 3 formatter classes from rich_argparse
@@ -29,7 +31,7 @@ class MultipleFormatter(RawTextRichHelpFormatter, RawDescriptionRichHelpFormatte
 def main():
     # create ArgumentParser
     parser = argparse.ArgumentParser(
-        prog="SuperPy",
+        prog="super.py",
         description="Keep track of your supermarket inventory!",
         formatter_class=MultipleFormatter,
         add_help=False,
@@ -41,14 +43,13 @@ def main():
         "--help",
         action="help",
         default=argparse.SUPPRESS,
-        help=help_text,
     )
     parser.add_argument(
         "-v",
         "--version",
         action="version",
-        version="%(prog)s 1.0",
-        help=version_text,
+        version=version_text_rich,
+        # help=version_text,
     )
     parser.add_argument(
         "-report",

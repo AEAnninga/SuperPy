@@ -69,7 +69,7 @@ def calculate_product_profit(bought_products, sold_products, product_range):
             ]
         except:
             return print(no_products_text)
-        # 
+        
         questions = [
             inquirer.List('product_name',
                 message="Choose product, use up and down arrows to select and press enter",
@@ -102,9 +102,10 @@ def calculate_product_profit(bought_products, sold_products, product_range):
 def show_profit(buy_dates=[], product_profit=False):
     bought_products = read_csv(bought_file)
     sold_products = read_csv(sold_file)
+    if len(bought_products) == 0 or len(sold_products) == 0:
+        return print(f"\nNo products available, or not enough products (sold) to calculate profit\n") 
     # buy_dates length default is 0 when no dates are given > otherwise exactly 2 dates are required 
-    if len(buy_dates) != 0:
-        
+    if len(buy_dates) != 0:    
         try:
             profit_message = calculate_date_profit(buy_dates, bought_products, sold_products)
         except:

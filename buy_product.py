@@ -2,13 +2,12 @@ from utils import is_float, is_int, create_id, create_product_id
 from date_handlers import convert_date, get_working_date
 from variable_helper import bought_file, product_range_file, storage_file, no_products_text
 from rich.prompt import Confirm
-from csv_helper import read_csv, write_to_csv, update_storage
+from csv_helper import read_csv, write_to_csv, update_storage, write_headers
 
-working_date = convert_date(get_working_date())
 
 def buy_product(args):
     product_name, buy_price, expiration_date, buy_quantity = args.bought
-
+    working_date = convert_date(get_working_date())
     # check price and quantity validity, if so > parse to float and int 
     if is_float(buy_price) and is_int(buy_quantity):
         buy_price = float(buy_price)
@@ -28,7 +27,7 @@ def buy_product(args):
     today = args.today
     new_date = working_date if today else convert_date(buy_date)
     new_id = create_id(bought_file, "bought_id")
-    cost = float(buy_price) * float(buy_quantity)
+    cost = round(float(buy_price) * float(buy_quantity), 2)
 
     bought_tuple = (
         new_id,
@@ -54,11 +53,16 @@ def buy_product(args):
     are_you_sure = Confirm.ask(confirm_text)
     if not are_you_sure:
         return
+
+    # check for products > if no product is bought yet > write headers to csv files
+    products_overview = read_csv(product_range_file)
+    if not products_overview:
+        print("First product, writing headers to csv file...")
+        print("Adding product...")
+        write_headers()
     
     # update bought file
     write_to_csv(bought_file, bought_tuple)
-
-    products_overview = read_csv(product_range_file)
     try:
         product_exist = [
             item for item in products_overview if item["product_name"] == product_name

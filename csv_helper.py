@@ -1,7 +1,7 @@
 import csv
 from variable_helper import date_file, cls_file
 import date_handlers
-from variable_helper import storage_file, storage_columns, bought_file, bought_columns, no_products_text
+from variable_helper import storage_file, storage_columns, bought_file, bought_columns, sold_file, sold_columns,product_range_file, product_range_columns
 
 # read and return data from csv file
 def read_csv(filename):
@@ -119,3 +119,16 @@ def update_storage(product_name, quantity, is_bought, bought_id):
             csv_writer.writeheader()
             csv_writer.writerows(bought_updated_list_of_dicts)
             file_handler.close()
+
+
+# funtion to write headers to csv files when first product is bought
+def write_headers():
+    storage_headers = tuple([item['column_name'] for item in storage_columns])
+    bought_headers = tuple([item['column_name'] for item in bought_columns])
+    sold_headers = tuple([item['column_name'] for item in sold_columns])
+    product_range_headers = tuple([item['column_name'] for item in product_range_columns])
+    write_to_csv(storage_file, storage_headers)
+    write_to_csv(bought_file, bought_headers)
+    write_to_csv(sold_file, sold_headers)
+    write_to_csv(product_range_file, product_range_headers)
+    

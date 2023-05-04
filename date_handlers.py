@@ -17,6 +17,9 @@ def get_nearest_exp_date(product_name):
 
 def get_working_date():
     working_date = read_csv(date_file)
+    if working_date == False:
+        change_working_date(date.today())
+        working_date = read_csv(date_file)
     return working_date
 
 
@@ -46,7 +49,6 @@ def convert_date(given_date, return_string: bool = True):
         except ValueError as err:
             print(f"{given_date} is not a valid date")
             return print(f"PLease use valid date")
-            # print(f"Wat voor date-type gaat eruit: {type(new_date)}")
         if return_string:
             date_as_string = date_as_object.__format__(f"%d-%m-%Y")
             return date_as_string

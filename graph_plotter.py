@@ -1,4 +1,5 @@
 import matplotlib.pyplot as plt
+import matplotlib.ticker as tck
 import numpy as np
 from csv_helper import get_csv_as_list_of_dicts, read_csv
 from variable_helper import filenames
@@ -10,6 +11,14 @@ def plot_graph_profit():
     product_range_items =  read_csv(filenames["product_range"]["name"])
     bought_products = read_csv(filenames["bought"]["name"])
     sold_products = read_csv(filenames["sold"]["name"])
+
+    # check if there are products
+    if not product_range_items or len(product_range_items) < 3:
+        return print(f"\n Not enough data available to display graph! \n")
+    if not bought_products:
+        return print(f"\n Not enough data available to display graph! \n")
+    if not sold_products:
+        return print(f"\n Not enough data available to display graph! \n")
 
     # create empty list
     data = []
@@ -29,9 +38,9 @@ def plot_graph_profit():
     
     # data for graph
     y = np.arange(len(data))
-    width = 0.25
+    width = 0.2
     multiplier = 0
-
+    
     fig, ax = plt.subplots()
     fig.set_size_inches(w=14, h=7)
     fig.set_facecolor("dimgrey")
@@ -59,18 +68,19 @@ def plot_graph_profit():
 
     # some data for little text box that shows total profit
     profit_box_facecolor = "red" if sum(finances['profit']) < 0 else "green"
-    profit_box_x = 1.077 * max_x
-    profit_box_y = 0.965 * len(product_names)
+    profit_box_x = 1.02 # * max_x
+    profit_box_y = 0.85 # * len(product_names)
     
     # create 3 horizontal bars: revenue, cost, profit > each attribute has amounts of all products > so 7 products means 21 bars grouped per 3
     for attribute, amounts in finances.items():
         offset = width * multiplier
-        bars = ax.barh(y + offset, amounts, width, label=attribute,color=bar_colors[attribute])
-        ax.bar_label(bars, padding=2,label_type='edge', fontsize=7)
+        bars = ax.barh(y + offset, amounts, width, label=attribute, color=bar_colors[attribute])
+        ax.bar_label(bars, padding=2, label_type='edge', fontsize=7)
         multiplier += 1
 
     # set properties (legend, titles, spans, etc.)
-    ax.set_ylabel('Product'.upper(), color="whitesmoke",loc="top",rotation="horizontal",labelpad=-75)
+    label_pad = max([len(item) for item in product_names]) * -1 # adjust labelpad according to longest product_name
+    ax.set_ylabel('Product'.upper(), color="whitesmoke",loc="top",rotation="horizontal", labelpad=label_pad)
     ax.set_xlabel("Euro".upper(), color="whitesmoke",loc='right')
     ax.set_title('Cost, revenue & profit'.upper(), color="whitesmoke",loc="center",fontdict={'fontsize':18,'fontweight':10})
     ax.set_yticks(y + width, product_names)
@@ -79,7 +89,7 @@ def plot_graph_profit():
     ax.axvspan(0,max_x*1.25,0,len(product_names), color="#dbfcc791", zorder=-2)
     ax.legend(loc='upper right', bbox_to_anchor=(1.0065, 1.075), fancybox=True, shadow=True, ncol=5)
     # text box with total profit
-    ax.text(profit_box_x, profit_box_y, f"Total profit: {sum(finances['profit'])} ", style='italic', color='whitesmoke', fontsize=8,
+    ax.text(profit_box_x, profit_box_y, f"Total profit: {sum(finances['profit'])} ", style='italic', color='whitesmoke', fontsize=8, transform=ax.transAxes,
         bbox={'facecolor': profit_box_facecolor, 'alpha': 0.5, 'pad': 10, 'edgecolor': 'whitesmoke'}
     )
     ax.tick_params(color="whitesmoke")
@@ -96,6 +106,10 @@ def plot_graph(filename):
         plot_graph_profit()
         return
     
+    list_of_dicts = get_csv_as_list_of_dicts(filenames[filename]["name"])
+    if len(list_of_dicts) == 0:
+        return print(f"Not enough data available to display graph!")
+    
     # conditions for changing quantity_key > quantities needed have different keys depending on which filename is given
     if filename == "storage":
         quantity_key = "stock"
@@ -105,7 +119,6 @@ def plot_graph(filename):
         quantity_key = "buy_quantity"
 
     # get data from csv file 
-    list_of_dicts = get_csv_as_list_of_dicts(filenames[filename]["name"])
     data=[]
     # will be coordinates for x axis
     left_coordinates = []
@@ -133,10 +146,12 @@ def plot_graph(filename):
     fig.set_size_inches(w=14, h=7)
     fig.set_facecolor("dimgrey")
     prod = ax.barh(left_coordinates,product_quantities, align='center', height=5, color="#6699cc")
-    ax.set_yticks(left_coordinates, labels=[label["product_name"] for label in data])
+    y_labels = [label["product_name"] for label in data]
+    ax.set_yticks(left_coordinates, labels=y_labels)
     ax.invert_yaxis()  
     ax.set_xlabel("Quantity".upper(), loc="right", color="whitesmoke")
-    ax.set_ylabel("Product".upper(), labelpad=-75, loc="top", color="whitesmoke", rotation="horizontal")
+    label_pad = max([len(item) for item in y_labels]) * -1 # adjust labelpad according to longest product_name
+    ax.set_ylabel("Product".upper(), labelpad=label_pad, loc="top", color="whitesmoke", rotation="horizontal")
     custom_title = f"Products in {filename}".upper() if filename == "storage" else f"{filename} products".upper() 
     ax.set_title(custom_title, color="whitesmoke")
     ax.set_xlim(left=0,right=max(product_quantities)*1.25)
@@ -156,6 +171,7 @@ def plot_graph(filename):
         ax.legend()
 
     ax.tick_params(color="whitesmoke")
+    ax.xaxis.set_major_locator(tck.MultipleLocator(5))
     plt.setp(ax.spines.values(), color="whitesmoke")
     plt.xticks(fontsize=8, color="whitesmoke")
     plt.yticks(fontsize=8, color="whitesmoke")

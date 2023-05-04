@@ -1,15 +1,16 @@
-from csv_helper import read_csv, write_to_csv, update_storage
 import inquirer
-from variable_helper import no_products_text, bought_file, sold_file, storage_file
+from rich.prompt import Confirm
+from csv_helper import read_csv, write_to_csv, update_storage
+from variable_helper import no_products_text, no_products_to_sell_text, bought_file, sold_file, storage_file
 from date_handlers import convert_date, get_working_date
 from utils import is_valid_sell_price, is_valid_sell_quantity, create_id
-from rich.prompt import Confirm
 
-working_date = convert_date(get_working_date())
+
 
 def sell_product(args):
     bought_products = read_csv(bought_file)
     storage_products = read_csv(storage_file)
+    working_date = convert_date(get_working_date())
     try:
         product_choices = [
             {
@@ -17,7 +18,8 @@ def sell_product(args):
                     {
                     "bought_id": int(subitem["bought_id"]),
                     "product_name": subitem["product_name"],
-                    "left_quantity": subitem["left_quantity"]
+                    "left_quantity": subitem["left_quantity"],
+                    "buy_price": subitem["buy_price"]
                     }
                     for subitem in bought_products
                     if int(subitem['left_quantity']) != 0
@@ -31,7 +33,7 @@ def sell_product(args):
         return print(no_products_text)
     
     if len(product_choices) < 1:
-        return print(no_products_text)
+        return print(no_products_to_sell_text)
     
     # get user input > product and sell_price
     product_choice = [
@@ -49,7 +51,7 @@ def sell_product(args):
 
     nested_product_choice = [
         inquirer.List('nested_product',
-            message="Choose product, use up and down arrows to select",
+            message="Choose batch, use up and down arrows to select",
             choices=chosen_product_with_bought_ids,
             carousel=True
         ),
@@ -62,13 +64,14 @@ def sell_product(args):
     # get product_to_sell with bought_id  
     product_to_sell = [item for item in bought_products if int(item["bought_id"]) == int(bought_id)][0]
     
-    # separate question for sell_price > with bought_id we can get and display buy_price to the user
-    sell_price_question = {inquirer.Text('sell_price', message="Sell price", validate=lambda _, price:  is_valid_sell_price(price))}
+    # separate question for sell_price > display bought_price to user (via nested_product or product_to_sell)
+    bought_price = nested_product["buy_price"]
+    sell_price_question = {inquirer.Text('sell_price', message=f"Sell price ( bought for {bought_price} )", validate=lambda _, price:  is_valid_sell_price(price))}
     input_sell_price = inquirer.prompt(sell_price_question)
     sell_price = input_sell_price['sell_price']
 
-    # separate question for quantity > with bought_id we can get left_quantity and display as max when prompting user 
-    max_sell_quantity = product_to_sell["left_quantity"]
+    # separate question for quantity > display left_quantity as max when prompting user 
+    max_sell_quantity = nested_product["left_quantity"]
     quantity_question = {inquirer.Text("sell_quantity", message=f"Sell quantity (max is {max_sell_quantity})", validate=lambda _, sell_quantity:  is_valid_sell_quantity(sell_quantity,max_sell_quantity))}
     chosen_quantity = inquirer.prompt(quantity_question)
     sell_quantity = chosen_quantity['sell_quantity']
@@ -91,7 +94,7 @@ def sell_product(args):
     # confirm question text
     confirm_text = f"""
     Are you sure you want to sell:\n
-    Product name:     {product_to_sell['product_name']}
+    Product name:     {nested_product['product_name']}
     Bought id:        {bought_id}
     Sell price:       {sell_price}
     Sell quantity:    {sell_quantity}
@@ -102,7 +105,7 @@ def sell_product(args):
     if not are_you_sure:
         return
     # update storage > storage.csv and bought.csv
-    update_storage(product_to_sell["product_name"], sell_quantity, False, bought_id)
+    update_storage(nested_product["product_name"], sell_quantity, False, bought_id)
     # write sold item to sold.csv
     write_to_csv(sold_file, sold_tuple)
 

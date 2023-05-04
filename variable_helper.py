@@ -1,4 +1,5 @@
 from rich.console import Console
+from rich.text import Text 
 
 # columns
 bought_columns = [
@@ -62,7 +63,8 @@ text_color = "#65e2fd"
 table_caption = f"[#6699cc]A[/#6699cc][lightgrey]nningast[/lightgrey] [#6699cc]P[/#6699cc][lightgrey]roductions[/lightgrey] [#6699cc]\xa9[/#6699cc]"
 
 # error handling text > when there are no products yet
-no_products_text = f"\n No products available. Please by products first! \n"
+no_products_text = f"\n No products available. Please buy products first! \n"
+no_products_to_sell_text = f"\n No products available for selling. \n"
 
 # dictionaries > keys as choices for arguments -report and -graph
 REPORTS = {
@@ -81,12 +83,6 @@ GRAPHS = {
 }
 
 # HELP TEXT VARIABLES: text will be displayed as beneath, indentation and whitespaces are preserved
-
-help_text = f"""Show this help message and exit.\n
-"""
-
-version_text = f"""Show version number of SuperPy and exit.\n 
-"""
 
 reports_help_text = f"""
 -report bought | sold | storage | product_range | all
@@ -113,34 +109,36 @@ storage         -->     {GRAPHS["storage"]}
 
 buy_product_help_text = f"""
 -bp | --buy-product [<product_name> <buy_price> <expiration_date> <quantity>]
-required: --today | --buy-date <dd-MM-yyyy> or <yyyy-MM--dd>
+required: --today | ( --use-date | -ud ) <dd-MM-yyyy> or <yyyy-MM--dd>
 
 Buy new product and write its properties to csv files where needed: bought.csv storage.csv product_range.csv 
-Fill in 4 product properties in correct order separated by spaces:
-For expiration_date use format: <dd-MM-yyyy> or <yyyy-MM--dd>
+Fill in 4 product properties in correct order separated by spaces and use --today or --use-date 
+For expiration_date and --use-date use format: <dd-MM-yyyy> or <yyyy-MM--dd>
 If your product_name contains spaces, enclose name in single or double quotes: "product name"/'product name'
 ----------------------------------------------------------------------------------------------------\n    
 """
 
 sell_product_help_text = f"""-sp | --sell-product
-required: --today | --sell-date <dd-MM-yyyy> or <yyyy-MM--dd>
+required: --today | ( --use-date | -ud ) <dd-MM-yyyy> or <yyyy-MM--dd>
 
 Sells a bought product and updates csv files where needed: sold.csv bought.csv storage.csv
 You will be prompted to:
-1. choose a bought product from a list
-2. fill in sell_price
-3. fill in sell_quantity
-To escape: ctrl c | ^c
+1. choose a product name from product range
+2. choose product batch (from bought products)
+3. fill in sell_price
+4. fill in sell_quantity
+5. confirm sell
+To abort early: ctrl c | ^c
 ----------------------------------------------------------------------------------------------------\n 
 """
 
 use_date_help_text = f"""Use in combination with -bp | --buy-product | -sp | --sell-product 
-When --today is also added, this date will be ignored.
+Cannot be used simultaneously with --today.
 ----------------------------------------------------------------------------------------------------\n
 """
 
 today_help_text = f"""Use instead of -ud | --use-date
-Will ignore sell or buy date (if present) and uses working_date.
+Cannot be used simultaneously with -ud or --use-date.
 ----------------------------------------------------------------------------------------------------\n
 """
 
@@ -189,7 +187,7 @@ date_profit_help_text = f"""
 
 Filter for profit, shows total profit made between two dates.
 To show profit of single date, fill in same date twice. 
-Fill in date, use format: <dd-MM-yyyy> or <yyyy-MM--dd>
+Fill in 2 dates, use format: <dd-MM-yyyy> or <yyyy-MM--dd>
 ----------------------------------------------------------------------------------------------------\n
 """
 
@@ -201,4 +199,52 @@ toggle_cls_help_text = f"""Toggles clear screen on or off:
 ON:  Console screen will be cleared with every command, except for -h (help) and -v (version). 
 OFF: Console screen will not be cleared, scrolling up through history is possible.
 ----------------------------------------------------------------------------------------------------\n
+"""
+
+# version text ascii art
+version_text = f"""\n
+  /$$$$$$                                          /$$$$$$$  /$$     /$$                                                                    
+ /$$__  $$                                        | $$__  $$|  $$   /$$/                                                                    
+| $$  \__/ /$$   /$$  /$$$$$$   /$$$$$$   /$$$$$$ | $$  \ $$ \  $$ /$$/                                                                     
+|  $$$$$$ | $$  | $$ /$$__  $$ /$$__  $$ /$$__  $$| $$$$$$$/  \  $$$$/                                                                      
+ \____  $$| $$  | $$| $$  \ $$| $$$$$$$$| $$  \__/| $$____/    \  $$/                                                                       
+ /$$  \ $$| $$  | $$| $$  | $$| $$_____/| $$      | $$          | $$                                                                        
+|  $$$$$$/|  $$$$$$/| $$$$$$$/|  $$$$$$$| $$      | $$          | $$                                                                        
+ \______/  \______/ | $$____/  \_______/|__/      |__/          |__/                                                                        
+                    | $$                                                                                                                    
+                    | $$                                                                                                                    
+                    |__/                                                                                                                    
+                                                 /$$    /$$                              /$$                             /$$        /$$$$$$ 
+                                                | $$   | $$                             |__/                           /$$$$       /$$$_  $$
+                                                | $$   | $$ /$$$$$$   /$$$$$$   /$$$$$$$ /$$  /$$$$$$  /$$$$$$$       |_  $$      | $$$$\ $$
+                                                |  $$ / $$//$$__  $$ /$$__  $$ /$$_____/| $$ /$$__  $$| $$__  $$        | $$      | $$ $$ $$
+                                                 \  $$ $$/| $$$$$$$$| $$  \__/|  $$$$$$ | $$| $$  \ $$| $$  \ $$        | $$      | $$\ $$$$
+                                                  \  $$$/ | $$_____/| $$       \____  $$| $$| $$  | $$| $$  | $$        | $$      | $$ \ $$$
+                                                   \  $/  |  $$$$$$$| $$       /$$$$$$$/| $$|  $$$$$$/| $$  | $$       /$$$$$$ /$$|  $$$$$$/
+                                                    \_/    \_______/|__/      |_______/ |__/ \______/ |__/  |__/      |______/|__/ \______/ 
+
+\n
+"""
+
+version_text_rich = f"""\n\n
+[#6699cc]  /$$$$$$                                         [/#6699cc][medium_purple2] /$$$$$$$  /$$     /$$[/medium_purple2]                                                                    
+[#6699cc] /$$__  $$                                        [/#6699cc][medium_purple2]| $$__  $$|  $$   /$$/[/medium_purple2]                                                                    
+[#6699cc]| $$  \__/ /$$   /$$  /$$$$$$   /$$$$$$   /$$$$$$ [/#6699cc][medium_purple2]| $$  \ $$ \  $$ /$$/ [/medium_purple2]                                                                    
+[#6699cc]|  $$$$$$ | $$  | $$ /$$__  $$ /$$__  $$ /$$__  $$[/#6699cc][medium_purple2]| $$$$$$$/  \  $$$$/  [/medium_purple2]                                                                    
+[#6699cc] \____  $$| $$  | $$| $$  \ $$| $$$$$$$$| $$  \__/[/#6699cc][medium_purple2]| $$____/    \  $$/   [/medium_purple2]                                                                    
+[#6699cc] /$$  \ $$| $$  | $$| $$  | $$| $$_____/| $$      [/#6699cc][medium_purple2]| $$          | $$    [/medium_purple2]                                                                    
+[#6699cc]|  $$$$$$/|  $$$$$$/| $$$$$$$/|  $$$$$$$| $$      [/#6699cc][medium_purple2]| $$          | $$    [/medium_purple2]                                                                    
+[#6699cc] \______/  \______/ | $$____/  \_______/|__/      [/#6699cc][medium_purple2]|__/          |__/    [/medium_purple2]                                                                    
+                    [#6699cc]| $$ [/#6699cc]                                                                                                                   
+                    [#6699cc]| $$ [/#6699cc]                                                                                                                   
+                    [#6699cc]|__/ [/#6699cc]                                                                                                                  
+                                [grey70] /$$    /$$                              /$$                           /$$        /$$$$$$  [/grey70]
+                                [grey70]| $$   | $$                             |__/                         /$$$$       /$$$_  $$ [/grey70]
+                                [grey70]| $$   | $$ /$$$$$$   /$$$$$$   /$$$$$$$ /$$  /$$$$$$  /$$$$$$$     |_  $$      | $$$$\ $$ [/grey70]
+                                [grey70]|  $$ / $$//$$__  $$ /$$__  $$ /$$_____/| $$ /$$__  $$| $$__  $$      | $$      | $$ $$ $$ [/grey70]
+                                [grey70] \  $$ $$/| $$$$$$$$| $$  \__/|  $$$$$$ | $$| $$  \ $$| $$  \ $$      | $$      | $$\ $$$$ [/grey70]
+                                [grey70]  \  $$$/ | $$_____/| $$       \____  $$| $$| $$  | $$| $$  | $$      | $$      | $$ \ $$$ [/grey70]
+                                [grey70]   \  $/  |  $$$$$$$| $$       /$$$$$$$/| $$|  $$$$$$/| $$  | $$     /$$$$$$ /$$|  $$$$$$/ [/grey70]
+                                [grey70]    \_/    \_______/|__/      |_______/ |__/ \______/ |__/  |__/    |______/|__/ \______/  [/grey70]
+\n\n                                
 """
