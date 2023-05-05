@@ -48,7 +48,7 @@ def convert_date(given_date, return_string: bool = True):
             date_as_object = datetime.strptime(given_date, date_format).date()
         except ValueError as err:
             print(f"{given_date} is not a valid date")
-            return print(f"PLease use valid date")
+            return print(f"PLease use valid date in format <dd-MM-yyyy> or <yyyy-MM-dd>")
         if return_string:
             date_as_string = date_as_object.__format__(f"%d-%m-%Y")
             return date_as_string
