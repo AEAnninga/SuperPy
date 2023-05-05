@@ -321,6 +321,7 @@ BEFORE USE, PLEASE INSTALL DEPENDENCIES IF NEEDED! :
             -op | --overall-profit
             -pp | --product-profit
 
+
 3.17    --toggle-cls
 
         Switch to toggle clear-screen ON or OFF
@@ -331,10 +332,50 @@ BEFORE USE, PLEASE INSTALL DEPENDENCIES IF NEEDED! :
 
         usage:
             python super.py --toggle-cls
+
+
+3.18    -backup
+
+        Writes data of products to backup csv files:
+
+        bought.csv           --> backup_bought.csv
+        sold.csv             --> backup_sold.csv
+        storage.csv          --> backup_storage.csv
+        product_range.csv    --> backup_product_range.csv
+
+        backup files are located in the folder 'backup_files'
+
+        usage:
+            python super.py -backup
             
 
 4.0     FINAL NOTICE
 ----------------------------------------------------------------------------------------------------------------------------------------------
+
+    Before starting to use SuperPy, make sure the following csv files are empty:
+
+        bought.csv
+        sold.csv
+        storage.csv
+        product_range.csv
+
+    Calculations are based on user input of products. 
+    Manually adding products to the csv files may result in calculation errors.
+    It is however possible to use dummy data provided in the dummy data csv files
+
+    To start the program with some dummy data, copy the data from the dummy data files to the csv files used by SuperPy:
+        
+        dummy_data_bought.csv           --> bought.csv
+        dummy_data_sold.csv             --> sold.csv
+        dummy_data_storage.csv          --> storage.csv
+        dummy_data_product_range.csv    --> product_range.csv
+
+    Dummy data files are located the folder 'dummy_data'
+
+    !!! DO NOT RENAME THE ORIGINAL FILENAMES AND DO NOT MOVE THE FILES TO ANOTHER LOCATION !!!
+    !!! DO NOT RENAME THE BACKUP FILENAMES AND DO NOT MOVE THE FILES TO ANOTHER LOCATION !!!
+    
+    The program will not function if you do so.
 
     Thanks for using super.py version 1.0
     Copyrights Reserved Anningast Productions 

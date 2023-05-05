@@ -68,7 +68,7 @@ def plot_graph_profit():
 
     # some data for little text box that shows total profit
     profit_box_facecolor = "red" if sum(finances['profit']) < 0 else "green"
-    profit_box_x = 1.02 # * max_x
+    profit_box_x = 1.01 # * max_x
     profit_box_y = 0.85 # * len(product_names)
     
     # create 3 horizontal bars: revenue, cost, profit > each attribute has amounts of all products > so 7 products means 21 bars grouped per 3

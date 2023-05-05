@@ -12,6 +12,7 @@ from buy_product import buy_product
 from sell_product import sell_product
 from cost_revenue import show_profit
 from utils import toggle_clear_screen, clear_screen
+from csv_helper import backup_data
 
 # Do not change these lines.
 __winc_id__ = "a2bc36ea784242e4989deb157d527ba0"
@@ -187,6 +188,12 @@ def main():
         dest="toggle_cls",
         help=toggle_cls_help_text,
     )
+    parser.add_argument(
+        "-backup",
+        action="store_true",
+        dest="back_up",
+        help=backup_help_text,
+    )
     
     # parse arguments from user
     parsed_args = parser.parse_args()
@@ -234,6 +241,8 @@ def execute_action(args):
             show_profit(buy_dates=given_buy_dates, product_profit=args.product_profit)
         if args.toggle_cls:
             toggle_clear_screen()
+        if args.back_up:
+            backup_data()
     else:
         no_args_text = Text(f"\n Please fill in arguments \n For help type: python super.py -h \n",style="bold italic white r")
         RichPrint(no_args_text)

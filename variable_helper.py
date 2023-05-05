@@ -50,6 +50,12 @@ filenames = {
     "product_range": {"name": product_range_file, "columns": product_range_columns},
 }
 
+# backup files
+backup_bought_file = "./backup_files/backup_bought.csv"
+backup_sold_file = "./backup_files/backup_sold.csv"
+backup_storage_file = "./backup_files/backup_storage.csv"
+backup_product_range_file = "./backup_files/backup_product_range.csv"
+
 # console variable for printing
 console = Console()
 
@@ -200,6 +206,11 @@ ON:  Console screen will be cleared with every command, except for -h (help) and
 OFF: Console screen will not be cleared, scrolling up through history is possible.
 ----------------------------------------------------------------------------------------------------\n
 """
+
+backup_help_text = f"""Writes data of bought, sold, storage and product_range files to backup files
+\n\n
+"""
+
 
 # version text ascii art
 version_text = f"""\n

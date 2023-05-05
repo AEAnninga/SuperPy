@@ -1,7 +1,9 @@
 import csv
 from variable_helper import date_file, cls_file
+from variable_helper import storage_file, storage_columns, bought_file, bought_columns, sold_file, sold_columns, product_range_file, product_range_columns
+from variable_helper import backup_bought_file, backup_sold_file, backup_storage_file, backup_product_range_file
 import date_handlers
-from variable_helper import storage_file, storage_columns, bought_file, bought_columns, sold_file, sold_columns,product_range_file, product_range_columns
+from rich.prompt import Confirm
 
 # read and return data from csv file
 def read_csv(filename):
@@ -121,14 +123,71 @@ def update_storage(product_name, quantity, is_bought, bought_id):
             file_handler.close()
 
 
-# funtion to write headers to csv files when first product is bought
-def write_headers():
+# function to write headers to csv files when first product is bought
+def write_headers(backup: bool = False):
     storage_headers = tuple([item['column_name'] for item in storage_columns])
     bought_headers = tuple([item['column_name'] for item in bought_columns])
     sold_headers = tuple([item['column_name'] for item in sold_columns])
     product_range_headers = tuple([item['column_name'] for item in product_range_columns])
-    write_to_csv(storage_file, storage_headers)
-    write_to_csv(bought_file, bought_headers)
-    write_to_csv(sold_file, sold_headers)
-    write_to_csv(product_range_file, product_range_headers)
+
+    if backup:
+        print("writing headers to backup files...")
+        rewrite_csv(backup_storage_file, storage_headers)
+        rewrite_csv(backup_bought_file, bought_headers)
+        rewrite_csv(backup_sold_file, sold_headers)
+        rewrite_csv(backup_product_range_file, product_range_headers)
+    else:
+        write_to_csv(storage_file, storage_headers)
+        write_to_csv(bought_file, bought_headers)
+        write_to_csv(sold_file, sold_headers)
+        write_to_csv(product_range_file, product_range_headers)
     
+
+# function to write data to backup files
+def backup_data():
+    # ask user for confirmation
+    confirm_text = f"""\n
+    Are you sure you want to backup your data?
+    All previous data in backup files will be overwritten!\n
+    """
+    are_you_sure = Confirm.ask(confirm_text)
+    if not are_you_sure:
+        return
+
+    # first write headers
+    write_headers(backup=True)
+
+    # get data from csv files
+    bought_data = read_csv(bought_file)
+    sold_data = read_csv(sold_file)
+    storage_data = read_csv(storage_file)
+    product_range_data = read_csv(product_range_file)
+    
+    # put data as dicts in backup list
+    backup_list = []
+    backup_list.append({"bought":bought_data})
+    backup_list.append({"sold":sold_data})
+    backup_list.append({"storage":storage_data})
+    backup_list.append({"product_range":product_range_data})
+    
+    # iterate through list and add data to backup files
+    for data_dict in backup_list:
+        dict_key = [key for key, _ in data_dict.items()][0]
+        datalist = [value for _, value in data_dict.items()][0]
+        for line_dict in datalist:
+            line_list = []
+            for value in line_dict.values():
+                line_list.append(value)
+            line_tuple = tuple(line_list)
+            if dict_key == "bought":
+                print(f"Writing data to {backup_bought_file}")
+                write_to_csv(backup_bought_file,line_tuple)
+            if dict_key == "sold":
+                print(f"Writing data to {backup_sold_file}")
+                write_to_csv(backup_sold_file,line_tuple)
+            if dict_key == "storage":
+                print(f"Writing data to {backup_storage_file}")
+                write_to_csv(backup_storage_file,line_tuple)
+            if dict_key == "product_range":
+                print(f"Writing data to {backup_product_range_file}")
+                write_to_csv(backup_product_range_file,line_tuple)

@@ -1,0 +1,3 @@
+sell_id,bought_id,product_name,sell_date,sell_price,sell_quantity,revenue
+1,1,cola,04-05-2023,3.25,15,48.75
+2,4,fanta,04-05-2023,2.95,10,29.5
