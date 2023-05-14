@@ -15,7 +15,7 @@ def create_table(dict_list, title):
     )
 
     # dict_list already has floats for revenue and cost
-    total_profit = sum([(item['revenue'] - item['cost']) for item in dict_list])
+    total_profit = round(sum([(item['revenue'] - item['cost']) for item in dict_list]), 2)
     
     # create table headers (columns) from dict keys
     for key in dict_list[0].keys():
@@ -30,7 +30,7 @@ def create_table(dict_list, title):
     # create rows
     for dict in dict_list:
         bought_id, name, cost, revenue = dict.values()
-        profit = revenue - cost
+        profit = round((revenue - cost), 2)
         table.add_row(
             bought_id,
             f"[{text_color}]{name}[/{text_color}]",

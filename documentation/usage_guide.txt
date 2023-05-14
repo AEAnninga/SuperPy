@@ -87,8 +87,7 @@ BEFORE USE, PLEASE INSTALL DEPENDENCIES IF NEEDED! :
 
 3.5     -bp | --buy-product [<product_name> <buy_price> <expiration_date> <quantity>]
 
-        REQUIRED: 
-            --today
+        Optional:
             -ud | --use-date <dd-MM-yyyy> or <yyyy-MM--dd>
 
         Buy new product and write its properties to csv files where needed: bought.csv storage.csv product_range.csv
@@ -98,30 +97,30 @@ BEFORE USE, PLEASE INSTALL DEPENDENCIES IF NEEDED! :
         Dates will always be converted. No errors will occur if you use the correct format: <dd-MM-yyyy> or <yyyy-MM--dd>
 
         usage:
-            python super.py -bp | --buy-product [<product_name> <buy_price> <expiration_date> <quantity>] --today
+            python super.py -bp | --buy-product [<product_name> <buy_price> <expiration_date> <quantity>] 
             python super.py -bp | --buy-product [<product_name> <buy_price> <expiration_date> <quantity>] -ud | --use-date <dd-MM-yyyy> or <yyyy-MM--dd>
 
         examples:
             Buy cola, buy price is 1.25, expiration date is 21-03-2024, quantity is 10:
                 
-                python super.py --buy-product cola 1.25 21-03-2024 10 --today
+                python super.py --buy-product cola 1.25 21-03-2024 10
 
                 * or choose buy date:
                 python super.py --bp cola 1.25 2024-03-21 10 -ud 02-05-2023
                 python super.py --buy-product cola 1.25 2024-03-21 10 --use-date 2023-05-02
 
                 * not cola, but coca cola (spaces in product name):
-                python super.py --buy-product "Coca Cola" 1.25 21-03-2024 10 --today
+                python super.py --buy-product "Coca Cola" 1.25 21-03-2024 10
         
-        It's recommended to have today's date as the working date and use --today when buying products.
+        It's recommended to have today's date as the working date (and use -ud / --use-date if necessary) when buying products.
+        (The program will notify you when it is not using today's date as working date)
         If data is entered correctly, program will ask to confirm the buy.
         Choose y(es) or n(o) to confirm or abort  
 
 
 3.6     -sp | --sell-product
 
-        REQUIRED:
-            --today
+        Optional:
             -ud | --use-date <dd-MM-yyyy> or <yyyy-MM--dd>
 
         Sells a bought product and updates csv files where needed: sold.csv bought.csv storage.csv
@@ -141,7 +140,8 @@ BEFORE USE, PLEASE INSTALL DEPENDENCIES IF NEEDED! :
             python super.py --sell-product -ud 21-05-2021
             python super.py -sp --use-date 2021-05-21
 
-        It's recommended to have today's date as the working date and use --today when buying products.
+        It's recommended to have today's date as the working date (and use -ud / --use-date if necessary) when selling products.
+        (The program will notify you when it is not using today's date as working date)
 
 
 3.7     -ud, --use-date
@@ -156,19 +156,7 @@ BEFORE USE, PLEASE INSTALL DEPENDENCIES IF NEEDED! :
             python super.py --sell-product -ud 2021-05-21
 
 
-3.8     --today
-
-        Use in combination with -bp | --buy-product | -sp | --sell-product
-        Cannot be used simultaneously with --use-date | -ud
-
-        usage:
-            python super.py -sp --today
-        examples:
-            python super.py -sp --today
-            python super.py --sell-product --today
-
-
-3.9     -cd | --change-date
+3.8     -cd | --change-date
 
         REQUIRED: 
             --days <int> or <-int>
@@ -176,7 +164,7 @@ BEFORE USE, PLEASE INSTALL DEPENDENCIES IF NEEDED! :
 
         Change date the program is currently working with:
             --days <int> | <-int>
-                Advance or subtract number of days from today's date (not working date!).
+                Advance or subtract number of days from working date!
                 Advance:    use positive integer 
                 Subtract:   use negative integer
                 Use 0 (zero) to reset date to today's date.
@@ -193,7 +181,7 @@ BEFORE USE, PLEASE INSTALL DEPENDENCIES IF NEEDED! :
             python super.py -cd --date 2021-05-21
 
  
-3.10    -dd | --display-date
+3.9    -dd | --display-date
 
         Displays date the program is currently working with.
 

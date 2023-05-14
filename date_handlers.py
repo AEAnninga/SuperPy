@@ -26,12 +26,13 @@ def get_working_date():
 def change_working_date(number_of_days: int = 0, given_date=None):
     if given_date:
         converted_date = convert_date(given_date)
-        current_used_date = [converted_date]
         if converted_date != None:
+            current_used_date = [converted_date]
             rewrite_csv(date_file, current_used_date)
     else:
         time_delta = timedelta(days=int(number_of_days))
-        converted_date = convert_date(date.today() + time_delta)
+        working_date = convert_date(get_working_date(), False) # False will give back a date object instead of a string
+        converted_date = convert_date(working_date + time_delta)
         current_used_date = [converted_date]
         if converted_date != None:
             rewrite_csv(date_file, current_used_date)

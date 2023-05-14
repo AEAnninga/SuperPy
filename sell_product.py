@@ -78,9 +78,8 @@ def sell_product(args):
 
     # create data for updating storage and sold files
     sell_date = args.used_date
-    today = args.today
     new_id = create_id(sold_file, "sell_id")
-    new_date = (working_date if today else convert_date(sell_date))  # datetime.fromisoformat(sell_date).date()
+    new_date = (working_date if sell_date == None else convert_date(sell_date))  # datetime.fromisoformat(sell_date).date()
     revenue = round((float(sell_quantity) * float(sell_price)), 2)
     sold_tuple = (
         new_id,

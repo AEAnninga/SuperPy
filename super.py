@@ -83,27 +83,13 @@ def main():
         dest="sold",
         help=sell_product_help_text,
     )
-
-    # create mutually exclusive group for -ud | --use-date and --today > set required condition first
-    buy_sell_group_is_required = "-bp" in sys.argv or "-sp" in sys.argv or "--buy-product" in sys.argv or "--sell-product" in sys.argv
-    buy_sell_group = parser.add_mutually_exclusive_group(required=buy_sell_group_is_required)
-
-    # add mutually exclusive arguments to buy_sell_group
-    buy_sell_group.add_argument(
+    parser.add_argument(
         "-ud",
         "--use-date",
         dest="used_date",
         help=use_date_help_text,
         type=str,
     )
-    buy_sell_group.add_argument(
-        "--today",
-        action="store_true",
-        dest="today",
-        help=today_help_text,
-    )
-
-    # arguments
     parser.add_argument(
         "-cd",
         "--change-date",
@@ -232,7 +218,7 @@ def execute_action(args):
         if args.display_date:
             print_date_text(display_text=True)
         if args.reset_date:
-            change_working_date()
+            change_working_date(given_date=date.today())
             print_date_text(reset_text=True)
         if args.profit:
             given_buy_dates = args.date_profit

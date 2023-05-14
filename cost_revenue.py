@@ -33,7 +33,7 @@ def calculate_date_profit(buy_dates, bought_products, sold_products) -> str:
                 for sold_item in sold_products
                 if sold_item["sell_date"] == convert_date(first_date)
             ])
-            return f"\nThe profit on {convert_date(first_date)} is:\n\n{product_revenue - product_cost}\n"
+            return f"\nThe profit on {convert_date(first_date)} is:\n\n{round((product_revenue - product_cost), 2)}\n"
         except:
             return print(no_products_text)
     
@@ -52,7 +52,7 @@ def calculate_date_profit(buy_dates, bought_products, sold_products) -> str:
                 if convert_date(sold_item["sell_date"], False) <= convert_date(latest_date, False)
                 and convert_date(sold_item["sell_date"], False) >= convert_date(earliest_date, False) 
             ])
-            return f"\nThe profit between {convert_date(earliest_date)} and {convert_date(latest_date)} is:\n\n{product_revenue - product_cost}\n"
+            return f"\nThe profit between {convert_date(earliest_date)} and {convert_date(latest_date)} is:\n\n{round((product_revenue - product_cost), 2)}\n"
         except:
             return print(no_products_text)
         

@@ -24,8 +24,8 @@ def buy_product(args):
     # create data for updating bought and storage files
     left_quantity = buy_quantity
     buy_date = args.used_date
-    today = args.today
-    new_date = working_date if today else convert_date(buy_date)
+    
+    new_date = working_date if buy_date == None else convert_date(buy_date)
     new_id = create_id(bought_file, "bought_id")
     cost = round(float(buy_price) * float(buy_quantity), 2)
 

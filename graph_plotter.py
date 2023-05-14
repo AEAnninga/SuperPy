@@ -89,7 +89,8 @@ def plot_graph_profit():
     ax.axvspan(0,max_x*1.25,0,len(product_names), color="#dbfcc791", zorder=-2)
     ax.legend(loc='upper right', bbox_to_anchor=(1.0065, 1.075), fancybox=True, shadow=True, ncol=5)
     # text box with total profit
-    ax.text(profit_box_x, profit_box_y, f"Total profit: {sum(finances['profit'])} ", style='italic', color='whitesmoke', fontsize=8, transform=ax.transAxes,
+    total_profit = round(sum(finances['profit']), 2)
+    ax.text(profit_box_x, profit_box_y, f"Total profit: {total_profit} ", style='italic', color='whitesmoke', fontsize=8, transform=ax.transAxes,
         bbox={'facecolor': profit_box_facecolor, 'alpha': 0.5, 'pad': 10, 'edgecolor': 'whitesmoke'}
     )
     ax.tick_params(color="whitesmoke")
